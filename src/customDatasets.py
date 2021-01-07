@@ -17,10 +17,12 @@ class PeriocularDataSet(Dataset):
     def __getitem__(self, index):
         path = os.path.join(self.root_dir, self.annotations.iloc[index, 0])
         image = io.imread(path)
-        center_x = torch.tensor(int(self.annotations.iloc[index, 1]))
-        center_y = torch.tensor(int(self.annotations.iloc[index, 2]))
+        bbx1 = torch.tensor(int(self.annotations.iloc[index, 5]))
+        bby1 = torch.tensor(int(self.annotations.iloc[index, 6]))
+        bbx2 = torch.tensor(int(self.annotations.iloc[index, 7]))
+        bby2 = torch.tensor(int(self.annotations.iloc[index, 8]))
 
         if self.transform:
             image = self.transform(image)
 
-        return (image, center_x, center_y)
+        return (image, bbx1, bby1, bbx2, bby2)
