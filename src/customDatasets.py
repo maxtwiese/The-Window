@@ -15,14 +15,16 @@ class PeriocularDataSet(Dataset):
         return len(self.annotations)
 
     def __getitem__(self, index):
+        targets = []
+#        for i in range(self.__len__()):
+        d = {}
+        d['boxes'] = torch.FloatTensor(self.annotations.iloc[index, 5:9].astype('float32'))
+        d['labels'] = 1 #torch.tensor([[1]]).to(torch.int64)
+        targets.append(d)
         path = os.path.join(self.root_dir, self.annotations.iloc[index, 0])
         image = io.imread(path)
-        bbx1 = torch.tensor(int(self.annotations.iloc[index, 5]))
-        bby1 = torch.tensor(int(self.annotations.iloc[index, 6]))
-        bbx2 = torch.tensor(int(self.annotations.iloc[index, 7]))
-        bby2 = torch.tensor(int(self.annotations.iloc[index, 8]))
 
         if self.transform:
             image = self.transform(image)
 
-        return (image, bbx1, bby1, bbx2, bby2)
+        return (image, targets)

@@ -10,8 +10,9 @@ from glob import glob
 import numpy as np
 import os
 import pandas as pd
+from PIL import Image
 
-def liu_ROI(x1, y1, x2, y2, a=0.5, b=0.5):
+def liu_RoI(x1, y1, x2, y2, a=0.5, b=0.5):
     """Boundary Box (BB) algorithm.
 
     Algorithm for BB from canthus point location based on work of Liu,
@@ -42,7 +43,7 @@ def liu_ROI(x1, y1, x2, y2, a=0.5, b=0.5):
 if __name__ == '__main__':
     os.chdir('/Users/maxwiese/Documents/DSI/assignments/The-Window/data'\
              '/UBIRISPr')
-    head = ['FileName','CornerOutPtX', 'CornerOutPtY', 'CornerInPtX',
+    head = ['FileName', 'CornerOutPtX', 'CornerOutPtY', 'CornerInPtX',
             'CornerInPtY']
     txts = sorted(glob('*.txt'))
     file_name= []
@@ -71,16 +72,24 @@ if __name__ == '__main__':
     zip_list = list(zip(file_name, out_pt_x, out_pt_y, in_pt_x, in_pt_y))
     df = pd.DataFrame(zip_list, columns=head).drop_duplicates()
     df['FileName'] = sorted(glob('*.jpg')) # Replace with image files names.
-    #df.insert(0, 'ImageName', sorted(glob('*.jpg'))) # Insert image file names.
 
     # Strip coordinates and convert to integers.
     head.remove('FileName')
-    for col in head: 
+    for col in head:
         df[col] = df[col].str.strip(' ;\n').astype('int')
 
     # Construct boundary boxes and save coordinates as new columns.
-    df['LeftBB'], df['LowerBB'], df['RightBB'], df['UpperBB'] = \
-        liu_ROI(df['CornerOutPtX'], df['CornerOutPtY'], df['CornerInPtX'],
-                df['CornerInPtY'], a=.5, b=.5)
+    df['X1'], df['Y1'], df['X2'], df['Y2'] = liu_RoI(df['CornerOutPtX'],
+                                                     df['CornerOutPtY'],
+                                                     df['CornerInPtX'],
+                                                     df['CornerInPtY'],
+                                                     a=.5, b=.5)
+    df['Width'] = df['FileName'].apply(lambda x: Image.open(x).size[0])
+    df['Height'] = df['FileName'].apply(lambda x: Image.open(x).size[1])
+    df['Y1'] = df['Y1'] /  df['Height'] * 800
+    df['Y2'] = df['Y2'] / df['Height'] * 800
+    df['X1'] = (2 * df['X1'] + df['Width'] - df['Height']) / df['Height'] * 400
+    df['X2'] = (2 * df['X2'] + df['Width'] - df['Height']) / df['Height'] * 400
 
+    print(df.info())
     df.to_csv(r'../UBIRISPr_Labels.csv', index=False) # Output to .csv
