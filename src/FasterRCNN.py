@@ -7,7 +7,7 @@ import torchvision
 from torch.utils.data import DataLoader, Dataset
 from torchvision.models.detection import FasterRCNN
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
-import cv2
+#import cv2
 from Datasets import TrainDataset
 
 # Initialize Dataset
@@ -17,13 +17,14 @@ def collate_fn(batch):
     return tuple(zip(*batch))
 
 train_load = DataLoader(train_dataset,
-                        batch_size=2, # arbitrary
+                        batch_size=1, # arbitrary
                         shuffle=True,
-                        num_workers=2, #arbitrary
+                        num_workers=1, #arbitrary
                         collate_fn=collate_fn)
 
 device = \
     torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+print(f"Device: {device}")
 
 #import matplotlib.pyplot as plt
 
@@ -41,6 +42,7 @@ device = \
 #ax.imshow(img)
 
 model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
+model.to(device)
 num_classes = 2
 # get number of input features for the classifier
 in_features = model.roi_heads.box_predictor.cls_score.in_features
@@ -59,25 +61,26 @@ itr = 1
 
 for epoch in range(num_epochs):
     for images, targets in train_load:
+        if torch.cuda.is_available():
+            
+            images = list(image.to(device) for image in images)
+            targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
 
-        images = list(image.to(device) for image in images)
-        targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
+            loss_dict = model(images, targets)
 
-        loss_dict = model(images, targets)
+            losses = sum(loss for loss in loss_dict.values())
+            loss_value = losses.item()
 
-        losses = sum(loss for loss in loss_dict.values())
-        loss_value = losses.item()
+            optimizer.zero_grad()
+            losses.backward()
+            optimizer.step()
 
-        optimizer.zero_grad()
-        losses.backward()
-        optimizer.step()
+            if itr % 50 == 0:
+                print(f"Iteration #{itr} loss: {loss_value}")
 
-        if itr % 50 == 0:
-            print(f"Iteration #{itr} loss: {loss_value}")
-        
-        itr += 1
+            itr += 1
 
-        lr_scheduler.step()
+            lr_scheduler.step()
 
     print(f"Epoch #{epoch} loss: {loss_value}")
 

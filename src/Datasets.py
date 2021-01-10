@@ -29,8 +29,8 @@ class TrainDataset(Dataset):
         # Convert to Tensors
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
         area  = torch.as_tensor(area, dtype=torch.float32) # COCO
-        labels = torch.ones((boxes.shape[0],), dtype=torch.int64)
-        iscrowd = torch.zeros((boxes.shape[0],), dtype=torch.int64)
+        labels = torch.ones((boxes.shape[0],), dtype=torch.int16)
+        iscrowd = torch.zeros((boxes.shape[0],), dtype=torch.int16)
 
         target = {}
         target['boxes'] = boxes

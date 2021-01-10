@@ -86,10 +86,10 @@ if __name__ == '__main__':
                                                      a=.5, b=.5)
     df['Width'] = df['FileName'].apply(lambda x: Image.open(x).size[0])
     df['Height'] = df['FileName'].apply(lambda x: Image.open(x).size[1])
-    df['Y1'] = df['Y1'] /  df['Height'] * 800
-    df['Y2'] = df['Y2'] / df['Height'] * 800
-    df['X1'] = (2 * df['X1'] + df['Width'] - df['Height']) / df['Height'] * 400
-    df['X2'] = (2 * df['X2'] + df['Width'] - df['Height']) / df['Height'] * 400
+    df['Y1'] = df['Y1'] /  df['Height'] * 400
+    df['Y2'] = df['Y2'] / df['Height'] * 400
+    df['X1'] = (2 * df['X1'] + df['Width'] - df['Height']) / df['Height'] * 200
+    df['X2'] = (2 * df['X2'] + df['Width'] - df['Height']) / df['Height'] * 200
 
     print(df.info())
     df.to_csv(r'../UBIRISPr_Labels.csv', index=False) # Output to .csv
