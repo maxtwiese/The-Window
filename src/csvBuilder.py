@@ -41,8 +41,9 @@ def liu_RoI(x1, y1, x2, y2, a=0.5, b=0.5):
     return x3, y3, x4, y4
 
 if __name__ == '__main__':
-    os.chdir('/Users/maxwiese/Documents/DSI/assignments/The-Window/data'\
-             '/UBIRISPr')
+    #os.chdir('/Users/maxwiese/Documents/DSI/assignments/The-Window/data'\
+    #         '/UBIRISPr')
+    os.chdir('../data/UBIRISPr')
     head = ['FileName', 'CornerOutPtX', 'CornerOutPtY', 'CornerInPtX',
             'CornerInPtY']
     txts = sorted(glob('*.txt'))
@@ -86,10 +87,10 @@ if __name__ == '__main__':
                                                      a=.5, b=.5)
     df['Width'] = df['FileName'].apply(lambda x: Image.open(x).size[0])
     df['Height'] = df['FileName'].apply(lambda x: Image.open(x).size[1])
-    df['Y1'] = df['Y1'] /  df['Height'] * 400
-    df['Y2'] = df['Y2'] / df['Height'] * 400
-    df['X1'] = (2 * df['X1'] + df['Width'] - df['Height']) / df['Height'] * 200
-    df['X2'] = (2 * df['X2'] + df['Width'] - df['Height']) / df['Height'] * 200
+    df['Y1'] = df['Y1'] /  df['Height'] * 256
+    df['Y2'] = df['Y2'] / df['Height'] * 256
+    df['X1'] = (2 * df['X1'] + df['Width'] - df['Height']) / df['Height'] * 128
+    df['X2'] = (2 * df['X2'] + df['Width'] - df['Height']) / df['Height'] * 128
 
     print(df.info())
-    df.to_csv(r'../UBIRISPr_Labels.csv', index=False) # Output to .csv
+    df.to_csv(r'../UBIRISPr_labels.csv', index=False) # Output to .csv

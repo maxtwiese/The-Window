@@ -15,13 +15,15 @@ class TrainDataset(Dataset):
 
     def __getitem__(self, index: int):
         # maybe issue with float32
-        transforms = T.Compose([T.Resize(800),
-                                T.CenterCrop(800),
+        transforms = T.Compose([T.Resize(256),
+                                T.CenterCrop(256),
                                 T.ToTensor(),
                                 T.ConvertImageDtype(torch.float32)])
         img = Image.open(os.path.join(r'../data/UBIRISPr',self.imgs[index]))
         img = transforms(img)
         img /= 255.0
+        #device = torch.device('cuda') if torch.cuda.is_available() \
+        #    else torch.device('cpu')
 
         boxes = self.annotations[['X1', 'Y1', 'X2', 'Y2']].values
         area = (boxes[:,3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0])
@@ -29,13 +31,13 @@ class TrainDataset(Dataset):
         # Convert to Tensors
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
         area  = torch.as_tensor(area, dtype=torch.float32) # COCO
-        labels = torch.ones((boxes.shape[0],), dtype=torch.int16)
-        iscrowd = torch.zeros((boxes.shape[0],), dtype=torch.int16)
+        labels = torch.ones((boxes.shape[0],), dtype=torch.int64)
+        iscrowd = torch.zeros((boxes.shape[0],), dtype=torch.int64)
 
         target = {}
         target['boxes'] = boxes
         target['labels'] = labels
-        target['image_id'] = torch.tensor([index])
+        target['image_id'] = torch.tensor([index], dtype=torch.int64)
         target['area'] = area # COCO
         target['iscrowd'] = iscrowd
         return img, target

@@ -17,9 +17,10 @@ def collate_fn(batch):
     return tuple(zip(*batch))
 
 train_load = DataLoader(train_dataset,
-                        batch_size=1, # arbitrary
+                        batch_size=2, # arbitrary
                         shuffle=True,
-                        num_workers=1, #arbitrary
+                        num_workers=4, #4*GPU
+                        pin_memory=True,
                         collate_fn=collate_fn)
 
 device = \
@@ -42,13 +43,13 @@ print(f"Device: {device}")
 #ax.imshow(img)
 
 model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
-model.to(device)
+
 num_classes = 2
 # get number of input features for the classifier
 in_features = model.roi_heads.box_predictor.cls_score.in_features
 # replace head
 model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
-
+model.to(device)
 params = [p for p in model.parameters() if p.requires_grad]
 optimizer = torch.optim.SGD(params, lr=0.005, momentum=0.9,
                             weight_decay=0.0005)
@@ -69,7 +70,8 @@ for epoch in range(num_epochs):
             loss_dict = model(images, targets)
 
             losses = sum(loss for loss in loss_dict.values())
-            loss_value = losses.item()
+            #loss_value = losses.item()
+            loss_value = losses.detach()
 
             optimizer.zero_grad()
             losses.backward()
