@@ -6,7 +6,7 @@ import torchvision.transforms as T
 from torch.utils.data import Dataset
 
 class TrainDataset(Dataset):
-    """Extension of torch Dataset for training on UBIRISPR images."""
+    """Extension of torch Dataset for training on UBIRISPr images."""
     def __init__(self, csv_file):
         super().__init__()
 
@@ -42,5 +42,27 @@ class TrainDataset(Dataset):
         target['iscrowd'] = iscrowd
         return img, target
 
+    def __len__(self) -> int:
+        return self.imgs.shape[0]
+    
+class TestDataset(Dataset):
+    """Extension of torch Dataset for testing on UBIRISPr images."""    
+    def __init__(self, csv_file):
+        super().__init__()
+        
+        self.annotations = pd.read_csv(csv_file)
+        self.imgs = self.annotations['FileName']
+        
+    def __getitem__(self, index: int):
+        transforms = T.Compose([T.Resize(256),
+                                T.CenterCrop(256),
+                                T.ToTensor(),
+                                T.ConvertImageDtype(torch.float32)])
+        img = Image.open(os.path.join(r'../data/UBIRISPr',self.imgs[index]))
+        img = transforms(img)
+        img /= 255.0
+        
+        return img
+    
     def __len__(self) -> int:
         return self.imgs.shape[0]

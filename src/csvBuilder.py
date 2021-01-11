@@ -91,6 +91,12 @@ if __name__ == '__main__':
     df['Y2'] = df['Y2'] / df['Height'] * 256
     df['X1'] = (2 * df['X1'] + df['Width'] - df['Height']) / df['Height'] * 128
     df['X2'] = (2 * df['X2'] + df['Width'] - df['Height']) / df['Height'] * 128
+ 
+    msk = np.random.rand(len(df)) < 0.8
+    train = df[msk]
+    test = df[~msk]
 
-    print(df.info())
-    df.to_csv(r'../UBIRISPr_labels.csv', index=False) # Output to .csv
+    print(f"Train Set Informaiton:\n {train.info()}")
+    print(f"Test Set Informaiton:\n {test.info()}")
+    train.to_csv('~/The-Window/data/Train_Set.csv', index=False) # ubuntu
+    test.to_csv('~/The-Window/data/Test_Set.csv', index=False)
