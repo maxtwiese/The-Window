@@ -6,7 +6,7 @@ import torchvision.transforms as T
 from torch.utils.data import Dataset
 
 class UBIRISPrDataset(Dataset):
-    """Extension of torch Dataset for training on UBIRISPr images."""
+    """Extension of torch Dataset for UBIRISPr images."""
     def __init__(self, csv_file):
         super().__init__()
 
@@ -46,7 +46,8 @@ class UBIRISPrDataset(Dataset):
 
     def __len__(self) -> int:
         return self.imgs.shape[0]
-    
+
+# Built for showing images. Not in used, but not worth deleting yet
 class TestDataset(Dataset):
     """Extension of torch Dataset for testing on UBIRISPr images."""    
     def __init__(self, csv_file):
