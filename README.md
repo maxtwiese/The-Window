@@ -22,12 +22,13 @@ Interest in machine learning for periocular recognition has increased with the d
 
 ### 2.1 Environment and Toolkit
 
-I am training on the PyTorch Vision framework. The following files in `src` are a part of that framework and used to execute the from thr `engine` module when called in `ddpFasterRCNN.py`.
-`coco_eval.py`
-`coco_utils.py`
-`engine.py`
-`transforms.py`
-`utils.py`
+I am training on the PyTorch Vision framework. The following files in `src` are a part of that framework and used to execute the from thr `engine` module when called in `ddpFasterRCNN.py`:
+
+- `coco_eval.py`
+- `coco_utils.py`
+- `engine.py`
+- `transforms.py`
+- `utils.py`
 
 ### 2.2 Method
 
