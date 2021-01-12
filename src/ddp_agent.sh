@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Single node with 2 GPUs
+# Single node with 4 GPUs
 export NUM_NODES=1
 export NUM_GPUS_PER_NODE=4
 export NODE_RANK=0

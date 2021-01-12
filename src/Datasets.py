@@ -14,25 +14,24 @@ class UBIRISPrDataset(Dataset):
         self.imgs = self.annotations['FileName']
 
     def __getitem__(self, index: int):
-        # maybe issue with float32
+        # Need to refine moving from float 32 -> float 16 without
+        # throwing the HalfTensor error.
         transforms = T.Compose([T.Resize(256),
                                 T.CenterCrop(256),
-                                T.ToTensor(),
+                                T.ToTensor(), # Can I set dtype now instead of
                                 T.Normalize(mean=[0.485, 0.456, 0.406],
                                             std=[0.229, 0.224, 0.225]),
-                                T.ConvertImageDtype(torch.float32)])
+                                T.ConvertImageDtype(torch.float32)]) # here?
         img = Image.open(os.path.join(r'../data/UBIRISPr',self.imgs[index]))
         img = transforms(img)
         img /= 255.0
-        #device = torch.device('cuda') if torch.cuda.is_available() \
-        #    else torch.device('cpu')
 
         boxes = self.annotations[['X1', 'Y1', 'X2', 'Y2']].values
         area = (boxes[:,3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0])
 
         # Convert to Tensors
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
-        area  = torch.as_tensor(area, dtype=torch.float32) # COCO
+        area  = torch.as_tensor(area, dtype=torch.float32)
         labels = torch.ones((boxes.shape[0],), dtype=torch.int64)
         iscrowd = torch.zeros((boxes.shape[0],), dtype=torch.int64)
 
@@ -40,7 +39,7 @@ class UBIRISPrDataset(Dataset):
         target['boxes'] = boxes
         target['labels'] = labels
         target['image_id'] = torch.tensor([index], dtype=torch.int64)
-        target['area'] = area # COCO
+        target['area'] = area
         target['iscrowd'] = iscrowd
         return img, target
 
