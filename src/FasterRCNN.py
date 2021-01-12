@@ -17,11 +17,11 @@ from Datasets import TrainDataset, TestDataset
 # Hyper Parameters
 seed = 29
 num_classes = 2
-num_epochs = 1 #40
-batch_size = 2 #16
+num_epochs = 10
+batch_size = 32
 num_workers = 8 # 4 * GPUcount
-learning_rate = 0.5 # 0.001
-weight_decay = 0.05 # 0.0005
+learning_rate = 0.01
+weight_decay = 0.005
 gamma = 0.1
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Device: {device}")
@@ -61,10 +61,6 @@ lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer,
 itr = 1
 
 for epoch in range(num_epochs):
-    kbar = pkbar.Kbar(target=int(train_dataset.__len__()/batch_size),
-                      epoch=epoch, num_epochs=num_epochs, width=8,
-                      always_stateful=True)
-    i = 0
     for images, targets in train_load:
 
         images = list(image.to(device) for image in images)
@@ -79,13 +75,11 @@ for epoch in range(num_epochs):
         optimizer.zero_grad()
         losses.backward()
         optimizer.step()
-
-        kbar.update(i, values=[("loss", train_loss),])
+        
         if itr % batch_size == 0:
             print(f"Iteration #{itr} loss: {loss_value}")
 
         itr += 1
-        i += 0
 
         lr_scheduler.step()
 

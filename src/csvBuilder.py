@@ -91,12 +91,86 @@ if __name__ == '__main__':
     df['Y2'] = df['Y2'] / df['Height'] * 256
     df['X1'] = (2 * df['X1'] + df['Width'] - df['Height']) / df['Height'] * 128
     df['X2'] = (2 * df['X2'] + df['Width'] - df['Height']) / df['Height'] * 128
- 
-    msk = np.random.rand(len(df)) < 0.8
-    train = df[msk]
-    test = df[~msk]
+    
+    df_small = df.head(1000)
+#    df.to_csv('~/The-Window/data/UBIRISPr_Labels.csv', index=False) # ubuntu
+#    df_small.to_csv('~/The-Window/data/UBIRISPr_Labels_small.csv', index=False)
+    
+    #print("""
+############################################
+#           Data Set Information           #
+############################################\n""")
+    #print(df.info())
+    #print("--------------------------------------------\n")
+    #print("""
+############################################
+#        Data Set Small Information        #
+############################################
+#Note: This is the first 100 entries for
+#complexity reduction in testing.\n""")
+#    print(df_small.info())
+    
+    #msk = np.random.rand(len(df)) < 0.1
+    #train = df[msk]
+    #test = df[~msk]
+    
+    # Make it small for now. As above, so below.
+    msk1 = np.random.rand(len(df)) < 0.8
+    train = df[msk1]
+    test = df[~msk1]
+    msk2 = np.random.rand(len(df_small)) < 0.8
+    train_small = df_small[msk2]
+    test_small = df_small[~msk2] 
 
-    print(f"Train Set Informaiton:\n {train.info()}")
-    print(f"Test Set Informaiton:\n {test.info()}")
+    #print(f"Train Set Informaiton:\n {train.info()}")
+    #print(f"Test Set Informaiton:\n {test.info()}")
+
+    ############################################
+    #          Train Set Information.          
+    ############################################
+    # Int64Index: 1649 entries, 4 to 10198
+    # Data columns (total 11 columns):
+    #  #   Column        Non-Null Count  Dtype  
+    # ---  ------        --------------  -----  
+    #  0   FileName      1649 non-null   object 
+    #  1   CornerOutPtX  1649 non-null   int64  
+    #  2   CornerOutPtY  1649 non-null   int64  
+    #  3   CornerInPtX   1649 non-null   int64  
+    #  4   CornerInPtY   1649 non-null   int64  
+    #  5   X1            1649 non-null   float64
+    #  6   Y1            1649 non-null   float64
+    #  7   X2            1649 non-null   float64
+    #  8   Y2            1649 non-null   float64
+    #  9   Width         1649 non-null   int64  
+    #  10  Height        1649 non-null   int64  
+    # dtypes: float64(4), int64(6), object(1)
+    # memory usage: 154.6+ KB
+    ############################################
+    
+    ############################################
+    #          Test Set Information.          
+    ############################################
+    #  Int64Index: 398 entries, 52 to 10109
+    #  Data columns (total 11 columns):
+    #  #   Column        Non-Null Count  Dtype  
+    # ---  ------        --------------  -----  
+    #  0   FileName      398 non-null    object 
+    #  1   CornerOutPtX  398 non-null    int64  
+    #  2   CornerOutPtY  398 non-null    int64  
+    #  3   CornerInPtX   398 non-null    int64  
+    #  4   CornerInPtY   398 non-null    int64  
+    #  5   X1            398 non-null    float64
+    #  6   Y1            398 non-null    float64
+    #  7   X2            398 non-null    float64
+    #  8   Y2            398 non-null    float64
+    #  9   Width         398 non-null    int64  
+    #  10  Height        398 non-null    int64  
+    # dtypes: float64(4), int64(6), object(1)
+    # memory usage: 37.3+ KB
+    ############################################
+
     train.to_csv('~/The-Window/data/Train_Set.csv', index=False) # ubuntu
     test.to_csv('~/The-Window/data/Test_Set.csv', index=False)
+    train_small.to_csv('~/The-Window/data/Train_Set_small.csv', index=False) # ubuntu
+    test_small.to_csv('~/The-Window/data/Test_Set_small.csv', index=False)
+    

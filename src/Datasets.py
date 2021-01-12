@@ -5,7 +5,7 @@ import torch
 import torchvision.transforms as T
 from torch.utils.data import Dataset
 
-class TrainDataset(Dataset):
+class UBIRISPrDataset(Dataset):
     """Extension of torch Dataset for training on UBIRISPr images."""
     def __init__(self, csv_file):
         super().__init__()
@@ -18,6 +18,8 @@ class TrainDataset(Dataset):
         transforms = T.Compose([T.Resize(256),
                                 T.CenterCrop(256),
                                 T.ToTensor(),
+                                T.Normalize(mean=[0.485, 0.456, 0.406],
+                                            std=[0.229, 0.224, 0.225]),
                                 T.ConvertImageDtype(torch.float32)])
         img = Image.open(os.path.join(r'../data/UBIRISPr',self.imgs[index]))
         img = transforms(img)
