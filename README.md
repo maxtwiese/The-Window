@@ -105,17 +105,7 @@ Eye recognition bounding boxes can be constructed in a few ways. Since this data
 
 *With canthus points (x<sub>1</sub>, y<sub>1</sub>) and (x<sub>2</sub>, y<sub>2</sub>) you calculate the Euclidean distance between those points as D and the midpoint of the line that connects the two canthus points as L<sub>p</sub>). Then you can generate the top left and bottom right corners of your rectangular RoI with chosen constants a and b.*
 
-$$D((x_1, y_1), (x_2, y_2)) = \sqrt {(x_1 - x_2)^2 + (y_1 - y_2)^2}$$
-
-$$L_p = (L_px, L_py)$$
-
-$$L_px = \frac{x_1 + x_2}{2}$$
-
-$$L_py = \frac{y_1 + y_2}{2}$$
-
-$$(x_3, y_3) = (L_px - a * D, L_py - b * D)$$
-
-$$(x_4, y_4) = (L_px + a * D, L_py + b * D)$$
+![Liu_RoI](data/Liu_RoI.png)
 
 Bounding box coordinates built from this algorithm and image file names were output to a helper document by [csvBuilder.py](src/csvBuilder.py) that is used by [Datasets.py](src/Datasets.py) to extend the PyTorch Dataset class to the UBIRIS Periocular images. The dataset reads the images in as PIL Images, resizes them, normalizes for the requirements set in Pytorch's Model Zoo, and converts them to a Tensor. It creates a target dictionary for each image that includes the bounding box, the classification label for that box (here they are all 1 since we are classifying eye or not eye), the area of the box, and background.
 
