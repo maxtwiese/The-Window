@@ -130,30 +130,29 @@ if __name__ == '__main__':
     train_small = df_small[msk2]
     test_small = df_small[~msk2] 
 
-    # Don't forget to adjust path when not on EC2.
+    # Don't forget to adjust path EC2/Local; you're in data/UBIRISPr.
+
     # For splitting here.
-    train.to_csv('~/The-Window/data/Train_Set.csv', index=False) # ubuntu
-    test.to_csv('~/The-Window/data/Test_Set.csv', index=False)
-    train_small.to_csv('~/The-Window/data/Train_Set_small.csv', index=False) # ubuntu
-    test_small.to_csv('~/The-Window/data/Test_Set_small.csv', index=False)
+    train.to_csv('../Train_Set.csv', index=False) # ubuntu
+    test.to_csv('../Test_Set.csv', index=False)
+    train_small.to_csv('../Train_Set_small.csv', index=False) # ubuntu
+    test_small.to_csv('../Test_Set_small.csv', index=False)
     # For splitting in DataLoader.
-    #df.to_csv('~/The-Window/data/UBIRISPr_Labels.csv', index=False) # ubuntu
-    #df_small.to_csv('~/The-Window/data/UBIRISPr_Labels_small.csv', index=False)
+    #df.to_csv('../data/UBIRISPr_Labels.csv', index=False) # ubuntu
+    #df_small.to_csv('../data/UBIRISPr_Labels_small.csv', index=False)
     
     # Visual sanity check.
-    print("""
-############################################
-#           Data Set Information           #
-############################################\n""")
+    print("############################################\n" +
+          "#           Data Set Information           #\n" +
+          "############################################\n")
     print(df.info())
-    print(f"Train: {train.size[0]} // Test: {test.size[0]}")
+    print(f"\nTrain: {train.shape[0]} // Test: {test.shape[0]}")
     print("--------------------------------------------\n")
-    print(f"""
-############################################
-#        Data Set Small Information        #
-############################################
-Note: This is the first {small} entries for
-complexity reduction in testing.\n""")
+    print("############################################\n" +
+          "#        Data Set Small Information        #\n" +
+          "############################################\n" +
+          "Note: This is the first {small} entries for\n" +
+          "complexity reduction in testing.\n")
     print(df_small.info())
-    print(f"Train: {train_small.size[0]} // Test: {test_small.size[0]}")
-    
+    print(f"\nTrain: {train_small.shape[0]} // Test: {test_small.shape[0]}")
+    print("--------------------------------------------")
