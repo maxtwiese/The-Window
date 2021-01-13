@@ -130,13 +130,12 @@ if __name__ == '__main__':
     train_small = df_small[msk2]
     test_small = df_small[~msk2] 
 
-    # Don't forget to adjust path EC2/Local; you're in data/UBIRISPr.
-
     # For splitting here.
     train.to_csv('../Train_Set.csv', index=False) # ubuntu
     test.to_csv('../Test_Set.csv', index=False)
     train_small.to_csv('../Train_Set_small.csv', index=False) # ubuntu
     test_small.to_csv('../Test_Set_small.csv', index=False)
+    
     # For splitting in DataLoader.
     #df.to_csv('../data/UBIRISPr_Labels.csv', index=False) # ubuntu
     #df_small.to_csv('../data/UBIRISPr_Labels_small.csv', index=False)
